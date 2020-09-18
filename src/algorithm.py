@@ -1,5 +1,7 @@
-import pandas as pd # to obtain cifs online
+from pandas import * # to obtain cifs online
 from ase.io.cif import read_cif # to read unit cell cif files
+
+from ase.io.espresso import *
 from ase.calculators.espresso import Espresso
 
 # build MoS2 electrode
