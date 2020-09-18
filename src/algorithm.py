@@ -1,13 +1,12 @@
-from ase.build import *
+import pandas as pd # to obtain cifs online
+from ase.io.cif import read_cif # to read unit cell cif files
 from ase.calculators.espresso import Espresso
-
-pseudopotentials = { 'Mo': 'Mo_ONCV_PBE-1.0.oncvpsp.upf', 'S': 's_pbe_v1.4.uspp.F.UPF' }
 
 # build MoS2 electrode
 
 # prepare input file
 # include pseudos in dir
-inCONTROL = { 'calculation': 'vc-relax', 'outdir': './tmp', 'forc_conv_thr': 0.001 }
+inCONTROL = { 'calculation': 'vc-relax', 'outdir': './tmp', 'forc_conv_thr': 0.001, 'pseudodir': './sssp' }
 inSYSTEM = { 'ecutrho' , 'ecutwfc', 'ibrav', 'celldm(1)', 'nat': 3, 'ntyp': 2, 'tot_charge': 0 } # tot_charge will change
 inELECTRONS = { 'conv_thr': 5e-9 }
 inIONS = { 'ion_dynamics': 'bfgs' }
