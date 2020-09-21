@@ -1,18 +1,26 @@
-from ase.io.cif import read_cif # to read unit cell cif files
-from ase.io.espresso import *
+from ase.io import read, write
 from ase.calculators.espresso import Espresso
 
-# build MoS2 electrode
+# for q in charges: # variable charge
+# for n in hydrogens: # variable NH
 
-# prepare input file
-# include pseudos in dir
-inCONTROL = { 'calculation': 'vc-relax', 'outdir': './tmp', 'forc_conv_thr': 0.001, 'pseudodir': './sssp' }
-inSYSTEM = { 'ecutrho' , 'ecutwfc', 'ibrav', 'celldm(1)', 'nat': 3, 'ntyp': 2, 'tot_charge': 0 } # tot_charge will change
-inELECTRONS = { 'conv_thr': 5e-9 }
-inIONS = { 'ion_dynamics': 'bfgs' }
-inCELL = { 'cell_dynamics': 'bfgs', 'cell_dofree' = '2Dxy' }
+# read cif
+cif = read('./MoS2H.cif')
+cell = cif.get_cell()
+symbols = cif.get_chemical_symbols()
+positions = cif.get_positions()
+print(cell, symbols, positions)
 
-infile = {}
+# write qe input
+
+
+'''
+
+control = { 'calculation': 'vc-relax', 'pseudodir': './sssp' }
+system = { 'ecutrho' , 'ecutwfc', 'ibrav': 0, 'nat': len(symbols), 'ntyp', 'tot_charge' }
+electrons = { 'conv_thr': 5e-9 }
+ions = { 'ion_dynamics': 'bfgs' }
+cell = { 'cell_dynamics': 'bfgs', 'cell_dofree' = 'all' }
 
 # run relax calculation
 relax = Espresso()
@@ -20,6 +28,8 @@ relax = Espresso()
 # run pw calculation
 pw = Espresso()
 read_espresso_out(_PW_TOTEN_) # read output total energy; returns slice -- use str_to_value() method
+
+'''
 
 '''minimization for dq'''
 # build electrode
@@ -30,3 +40,4 @@ read_espresso_out(_PW_TOTEN_) # read output total energy; returns slice -- use s
 
 # perform minimization with qe
 # perform minimization with environ
+
