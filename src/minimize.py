@@ -1,7 +1,7 @@
-from ase.io import read, write
+from ase.io import read, write, espresso
 from ase.calculators.espresso import Espresso
 
-# for q in charges: # variable charge
+# for q in potentials: # variable charge
 # for n in hydrogens: # variable NH
 
 # read cif
@@ -9,10 +9,11 @@ cif = read('./MoS2H.cif')
 cell = cif.get_cell()
 symbols = cif.get_chemical_symbols()
 positions = cif.get_positions()
-print(cell, symbols, positions)
+#print(cell, symbols, positions)
 
 # write qe input
-
+n = 0 # test iteration 0
+pwin = espresso.write_espresso_in(f"cif{n}.in", cif) # file argument should be a file object, not a string -- raises exception
 
 '''
 
