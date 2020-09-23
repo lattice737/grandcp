@@ -1,35 +1,37 @@
+import os
 from ase.io import read, write, espresso
 from ase.calculators.espresso import Espresso
 
 # for q in potentials: # variable charge
 # for n in hydrogens: # variable NH
 
-# read cif
+'''read cif'''
 cif = read('./MoS2H.cif')
-cell = cif.get_cell()
+unit = cif.get_cell() # read unit cell
+
+# this line: make supercell # 2D : 2 x 2 x 0
+
 symbols = cif.get_chemical_symbols()
 positions = cif.get_positions()
 #print(cell, symbols, positions)
 
-# write qe input
-n = 0 # test iteration 0
-pwin = espresso.write_espresso_in(f"cif{n}.in", cif) # file argument should be a file object, not a string -- raises exception
+
+'''write qe input'''
+relaxinput = {
+    'control': { 'calculation': 'vc-relax', 'pseudodir': './pseudos' },
+    'system': { 'ecutrho', 'ecutwfc' } # read SSSP_efficiency.json ??
+    'electrons': { 'conv_thr': 5e-9 },
+    'ions': { 'ion_dynamics': 'bfgs' },
+    'cell': { 'cell_dynamics': 'bfgs', 'cell_dofree': 'all' }
+    }
+
+n = 0
+pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput, kpts='gamma' ) # does not read 'gamma' properly, need to pass symbols for pseudos
 
 '''
-
-control = { 'calculation': 'vc-relax', 'pseudodir': './sssp' }
-system = { 'ecutrho' , 'ecutwfc', 'ibrav': 0, 'nat': len(symbols), 'ntyp', 'tot_charge' }
-electrons = { 'conv_thr': 5e-9 }
-ions = { 'ion_dynamics': 'bfgs' }
-cell = { 'cell_dynamics': 'bfgs', 'cell_dofree' = 'all' }
-
 # run relax calculation
-relax = Espresso()
-
-# run pw calculation
-pw = Espresso()
-read_espresso_out(_PW_TOTEN_) # read output total energy; returns slice -- use str_to_value() method
-
+relax = Espresso() # read total energy
+#etot = ??? # get relax._E_TOT_ ??
 '''
 
 '''minimization for dq'''
