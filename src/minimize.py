@@ -8,11 +8,11 @@ from ase.calculators.espresso import Espresso
 
 
 '''read cif -- working'''
-cif = read('./MoS2H.cif') # update to receive input
+cif = read('./unitcell.cif') # update to receive input; set to MoS2 sample
 unit = cif.get_cell() # read unit cell
 
 # this line: to make supercell from unit cell # 2D : 2 x 2 x 0
-
+# use ASE Cell object?
 
 '''get pseudos & cutoffs -- working'''
 sssp = json.load( open('./efficiency.json') )
@@ -43,16 +43,15 @@ pw = '/Users/nicholas/Desktop/qe/bin/pw.x'
 os.system( f"{pw} < cif0.in > cif0.out" ) # exception raised: 'charge is wrong; smearing needed' ??
 
 etot = espresso.read_espresso_out(open('cif0.out'), index=6) # read total energy; RETURNS OBJECT -- NEED ATTRIBUTE
-#print(etot)
+print(etot)
 
 
 '''minimization for dq'''
-# build electrode
-# perform relax
-# add hydrogen
-# take total E from output
-# determine H2 energy
-
-# perform minimization with qe
-# perform minimization with environ
+# build electrode (NH = 0) # in progress
+# create input files (NH = 1, 2, 3, 4) # DONE
+# perform relax in qe # DONE
+# take total energy from output # in progress
+# take total H energy # with ASE?
+# repeat for various system charge
+# repeat with environ
 
