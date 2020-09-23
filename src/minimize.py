@@ -25,14 +25,15 @@ relaxinput = {
     'cell': { 'cell_dynamics': 'bfgs', 'cell_dofree': 'all' }
     }
 
-n = 0
+n = 0 # remove when loops scripted
 pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput, kpts='gamma' ) # does not read 'gamma' properly, need to pass symbols for pseudos
 
 '''
 # run relax calculation
 relax = Espresso() # read total energy
-#etot = ??? # get relax._E_TOT_ ??
+#etot = ??? # get relax._E_TOT_ ?? https://wiki.fysik.dtu.dk/ase/_modules/ase/calculators/calculator.html#FileIOCalculator
 '''
+
 
 '''minimization for dq'''
 # build electrode
