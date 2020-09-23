@@ -1,45 +1,49 @@
 import os
-import json # ecutwfc, ecutrho values
+import json # read pseudos, ecutwfc, ecutrho
 from ase.io import read, write, espresso
 from ase.calculators.espresso import Espresso
 
-# for q in potentials: # variable charge
-# for n in hydrogens: # variable NH
+#for q in potentials: # variable charge
+#for n in hydrogens: # variable hydrogen atoms
 
-'''read cif'''
-cif = read('./MoS2H.cif')
+
+'''read cif -- working'''
+cif = read('./MoS2H.cif') # update to receive input
 unit = cif.get_cell() # read unit cell
 
-# this line: make supercell # 2D : 2 x 2 x 0
+# this line: to make supercell from unit cell # 2D : 2 x 2 x 0
 
-'''get cutoffs'''
-symbols = cif.get_chemical_symbols()
-cutoffs = json.load( open('./efficiency.json') )
-rholist = [ cutoffs[atom]['rho_cutoff'] for atom in symbols ]
-wfclist = [ cutoffs[atom]['cutoff'] for atom in symbols ]
+
+'''get pseudos & cutoffs -- working'''
+sssp = json.load( open('./efficiency.json') )
+
+pseudodict = { atom: sssp[atom]['filename'] for atom in cif.get_chemical_symbols() }
+rholist = [ sssp[atom]['rho_cutoff'] for atom in cif.get_chemical_symbols() ]
+wfclist = [ sssp[atom]['cutoff'] for atom in cif.get_chemical_symbols() ]
 rho = min(rholist)
 wfc = min(wfclist)
-print(symbols)
-print(rholist, wfclist)
-print(rho, wfc)
 
-'''write qe input'''
+
+'''write qe input files -- working'''
 relaxinput = {
-    'control': { 'calculation': 'vc-relax', 'pseudodir': './pseudos' },
-    #'system': { 'ecutrho', 'ecutwfc' } # read SSSP_efficiency.json ??
-    'electrons': { 'conv_thr': 5e-9 },
+    'control': { 'calculation': 'vc-relax', 'pseudo_dir': './pseudos/' },
+    'system': { 'ecutrho': rho, 'ecutwfc': wfc },
+    'electrons': { 'conv_thr': 5.E-3 },
     'ions': { 'ion_dynamics': 'bfgs' },
     'cell': { 'cell_dynamics': 'bfgs', 'cell_dofree': 'all' }
     }
 
 n = 0 # remove when loops scripted
-pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput ) # may need to add kpts
+pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput, pseudopotentials=pseudodict )
 
-'''
-# run relax calculation
-relax = Espresso() # read total energy
-#etot = ??? # get relax._E_TOT_ ?? https://wiki.fysik.dtu.dk/ase/_modules/ase/calculators/calculator.html#FileIOCalculator
-'''
+
+'''run vc-relax -- debugging'''
+pw = '/Users/nicholas/Desktop/qe/bin/pw.x'
+# infile, outfile
+os.system( f"{pw} < cif0.in > cif0.out" ) # exception raised: 'charge is wrong; smearing needed' ??
+
+etot = espresso.read_espresso_out(open('cif0.out'), index=6) # read total energy; RETURNS OBJECT -- NEED ATTRIBUTE
+#print(etot)
 
 
 '''minimization for dq'''
