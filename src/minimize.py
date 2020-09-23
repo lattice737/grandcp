@@ -1,4 +1,5 @@
 import os
+import json # ecutwfc, ecutrho values
 from ase.io import read, write, espresso
 from ase.calculators.espresso import Espresso
 
@@ -11,22 +12,28 @@ unit = cif.get_cell() # read unit cell
 
 # this line: make supercell # 2D : 2 x 2 x 0
 
+'''get cutoffs'''
 symbols = cif.get_chemical_symbols()
-positions = cif.get_positions()
-#print(cell, symbols, positions)
-
+cutoffs = json.load( open('./efficiency.json') )
+rholist = [ cutoffs[atom]['rho_cutoff'] for atom in symbols ]
+wfclist = [ cutoffs[atom]['cutoff'] for atom in symbols ]
+rho = min(rholist)
+wfc = min(wfclist)
+print(symbols)
+print(rholist, wfclist)
+print(rho, wfc)
 
 '''write qe input'''
 relaxinput = {
     'control': { 'calculation': 'vc-relax', 'pseudodir': './pseudos' },
-    'system': { 'ecutrho', 'ecutwfc' } # read SSSP_efficiency.json ??
+    #'system': { 'ecutrho', 'ecutwfc' } # read SSSP_efficiency.json ??
     'electrons': { 'conv_thr': 5e-9 },
     'ions': { 'ion_dynamics': 'bfgs' },
     'cell': { 'cell_dynamics': 'bfgs', 'cell_dofree': 'all' }
     }
 
 n = 0 # remove when loops scripted
-pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput, kpts='gamma' ) # does not read 'gamma' properly, need to pass symbols for pseudos
+pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput ) # may need to add kpts
 
 '''
 # run relax calculation
