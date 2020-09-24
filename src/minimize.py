@@ -17,6 +17,7 @@ cif = read('./unitcell.cif') # update to receive input; set to MoS2 sample
 cifstr = cif.get_chemical_formula(mode='reduce')
 write(f"{cifstr}.png", cif, format='png', show_unit_cell=2, rotation='90x', scale=35)
 os.system(f"open {cifstr}.png")
+os.system(f"rm {cifstr}.png")
 
 '''get pseudos & cutoffs -- working'''
 sssp = json.load( open('./efficiency.json') )
