@@ -1,7 +1,7 @@
 import os
 import json # read pseudos, ecutwfc, ecutrho
 from ase.io import read, write, espresso
-from ase.calculators.espresso import Espresso
+from ase import Atoms
 
 #for q in potentials: # variable charge
 #for n in hydrogens: # variable hydrogen atoms
@@ -9,10 +9,14 @@ from ase.calculators.espresso import Espresso
 
 '''read cif -- working'''
 cif = read('./unitcell.cif') # update to receive input; set to MoS2 sample
-unit = cif.get_cell() # read unit cell
 
-# this line: to make supercell from unit cell # 2D : 2 x 2 x 0
-# use ASE Cell object?
+# make primitive unit cell -- maybe Atoms or geometry tools
+# make 2D supercell -- use ase.build.supercells
+
+'''display unit cell'''
+cifstr = cif.get_chemical_formula(mode='reduce')
+write(f"{cifstr}.png", cif, format='png', show_unit_cell=2, rotation='90x', scale=35)
+os.system(f"open {cifstr}.png")
 
 '''get pseudos & cutoffs -- working'''
 sssp = json.load( open('./efficiency.json') )
@@ -40,10 +44,10 @@ pwin = espresso.write_espresso_in( open(f"cif{n}.in",'w'), cif, relaxinput, pseu
 '''run vc-relax -- debugging'''
 pw = '/Users/nicholas/Desktop/qe/bin/pw.x'
 # infile, outfile
-os.system( f"{pw} < cif0.in > cif0.out" ) # exception raised: 'charge is wrong; smearing needed' ??
+#os.system( f"{pw} < cif0.in > cif0.out" ) # exception raised: 'charge is wrong; smearing needed' ??
 
-etot = espresso.read_espresso_out(open('cif0.out'), index=6) # read total energy; RETURNS OBJECT -- NEED ATTRIBUTE
-print(etot)
+#etot = espresso.read_espresso_out(open('cif0.out'), index=6) # read total energy; RETURNS OBJECT -- NEED ATTRIBUTE
+#print(etot)
 
 
 '''minimization for dq'''
