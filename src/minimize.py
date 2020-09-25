@@ -15,7 +15,15 @@ cif = read('./unitcell.cif') # update to receive input; set to MoS2 sample
 
 '''make separate directory'''
 cifstr = cif.get_chemical_formula(mode='reduce')
-if not os.path.exists(cifstr): os.mkdir(cifstr) # make new dir if unit cell dir does not exist
+
+if os.path.exists(cifstr):
+    overwrite = input(f"{cifstr} already exists. Overwrite? (y/n): ")
+    if overwrite != 'y':
+        print('\nGoodbye.')
+        quit()
+else:
+    os.mkdir(cifstr) # make new dir if unit cell dir does not exist
+
 os.chdir(f"./{cifstr}")
 
 potentials = [0.0] # 0.0 when testing
