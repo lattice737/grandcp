@@ -1,8 +1,9 @@
 &CONTROL
    calculation      = 'vc-relax'
-   pseudo_dir       = './pseudos/'
+   pseudo_dir       = '../../pseudos/'
 /
 &SYSTEM
+   tot_charge       = 0.0
    ecutwfc          = 35.0
    ecutrho          = 140.0
    ntyp             = 2
