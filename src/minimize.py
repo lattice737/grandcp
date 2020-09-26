@@ -8,11 +8,6 @@ from ase import Atoms
 cif = read('./unitcell.cif') # update to receive input; set to MoS2 sample
 cifstr = cif.get_chemical_formula(mode='reduce')
 
-# check/make primitive unit cell -- try Atoms or geometry tools
-
-'''build 2x2 supercell -- working'''
-electrode = crystal(cif, size=(2,2,1))
-write(f"{cifstr}.png", electrode, format='png', show_unit_cell=2, rotation='5x,30y,90z', scale=35) # electrode image
 '''simple check for existing files -- working'''
 if os.path.exists(cifstr):
     overwrite = input(f"{cifstr} already exists. Overwrite? (y/n): ")
@@ -23,7 +18,13 @@ else:
     os.mkdir(cifstr) # make new dir if unit cell dir does not exist
 os.chdir(f"./{cifstr}")
 
-'''create input files & store energy results -- in progress'''
+# future development: check/make primitive unit cell -- try Atoms or geometry tools
+
+'''build 2x2 supercell -- working'''
+electrode = crystal(cif, size=(2,2,1))
+write(f"{cifstr}.png", electrode, format='png', show_unit_cell=2, rotation='5x,30y,90z', scale=35) # electrode image
+
+'''minimize routine -- in progress'''
 potentials = [0.0] # 0.0 when testing
 hydrogens = [0] # use hydrogens = int() for final script; link to unit cell surface in the future
 energies = {}
@@ -35,8 +36,8 @@ for i,q in enumerate(potentials): # variable charge
     
     for n in hydrogens: # change hydrogens to range(hydrogens+1) in final script
 
+        '''add n-hydrogens to electrode'''
         # this line to add hydrogens -- no changes to cell for now
-        
         energies[f"Q{i}"] = {f"H{n}": 0} # {energies: {charge: {n-hydrogens: OUTPUT}}}
 
         '''get pseudos & cutoffs -- working'''
@@ -70,11 +71,11 @@ for i,q in enumerate(potentials): # variable charge
 
     os.chdir('../') # back to unit cell directory
     
-print(energies)
+print(energies) # FOR TESTING
 
 '''minimization for dq'''
 # build electrode (NH = 0) # DONE
-# create input files (NH = 1, 2, 3, 4) # in progress
+# create input files (NH = 1, 2, 3, 4) # in progress, adding H to electrode
 # perform relax in qe # DONE
 # take total energy from output # DONE
 # take total H energy # in progress
