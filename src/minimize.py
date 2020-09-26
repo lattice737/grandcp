@@ -74,10 +74,10 @@ print(energies)
 
 '''minimization for dq'''
 # build electrode (NH = 0) # DONE
-# create input files (NH = 1, 2, 3, 4) # DONE
+# create input files (NH = 1, 2, 3, 4) # in progress
 # perform relax in qe # DONE
-# take total energy from output # in progress
-# take total H energy # with ASE?
-# repeat for various system charge
+# take total energy from output # DONE
+# take total H energy # in progress
+# repeat for various system charge # in progress
 # repeat with environ
 
