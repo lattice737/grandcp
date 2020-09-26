@@ -6,6 +6,8 @@
    tot_charge       = 0.0
    ecutwfc          = 35.0
    ecutrho          = 140.0
+   degauss          = 0.1
+   smearing         = 'mv'
    ntyp             = 2
    nat              = 3
    ibrav            = 0
