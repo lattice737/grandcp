@@ -42,14 +42,14 @@ for i,q in enumerate(potentials): # variable charge
     
     for n in hydrogens: # change hydrogens to range(hydrogens+1) in final script
 
-        energies[f"Q{i}"] = {f"H{n}": 0} # {energies: {charge: {n-hydrogens: OUTPUT}}}
+        energies[f"Q{i}"] = {f"H{n}": 0} # {charge: {n-hydrogens: OUTPUT}}
 
         '''add n-hydrogens to electrode'''
         # this line to add hydrogens -- no changes to cell for now
         if n > 0:
             pseudodict['H'] = sssp['H']['cutoff'] # add hydrogen pseudo
-            if wfc > 60.0: wfc = 60.0
-            if rho > 480.0: rho = 480.0
+            if int(wfc) > 60: wfc = 60.0
+            if int(rho) > 480: rho = 480.0
 
         '''write qe input files -- working'''
         relaxinput = {
@@ -63,7 +63,7 @@ for i,q in enumerate(potentials): # variable charge
         fin, fout = f"{cifstr}H{n}.in", f"{cifstr}H{n}.out"
         espresso.write_espresso_in( open(fin,'w'), electrode, relaxinput, pseudopotentials=pseudodict )
 
-        '''run vc-relax -- debugging'''
+        '''run vc-relax -- working'''
         pw = '/Users/nicholas/Desktop/qe/bin/pw.x' # update to take user input when script complete
         os.system( f"{pw} < {fin} > {fout}" ) # exception raised for H=1: 'charge is wrong; smearing needed' ??
         
