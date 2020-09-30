@@ -1,11 +1,12 @@
 import os
+import sys
 import json # read pseudos, ecutwfc, ecutrho
 from ase.io import read, write, espresso
 from ase.spacegroup import *
 from ase import Atoms
 
 '''read cif -- working'''
-cif = read('./unitcell.cif') # update to receive input; set to MoS2 sample
+cif = read('./unitcell.cif') # update to receive argv input; set to MoS2 sample
 cifstr = cif.get_chemical_formula(mode='reduce')
 
 '''simple check for existing files -- working'''
@@ -21,7 +22,7 @@ os.chdir(f"./{cifstr}")
 # future development: check/make primitive unit cell -- try Atoms or geometry tools
 
 '''get pseudos & cutoffs -- working'''
-sssp = json.load( open('../efficiency.json') )
+sssp = json.load( open('../src/efficiency.json') )
 pseudodict = { atom: sssp[atom]['filename'] for atom in cif.get_chemical_symbols() }
 rho = min([ sssp[atom]['rho_cutoff'] for atom in cif.get_chemical_symbols() ])
 wfc = min([ sssp[atom]['cutoff'] for atom in cif.get_chemical_symbols() ])
@@ -53,7 +54,7 @@ for i,q in enumerate(potentials): # variable charge
 
         '''write qe input files -- working'''
         relaxinput = {
-            'control': { 'calculation': 'vc-relax', 'pseudo_dir': '../../pseudos/' },
+            'control': { 'calculation': 'vc-relax', 'pseudo_dir': '../../src/pseudos/' },
             'system': { 'ecutrho': rho, 'ecutwfc': wfc, 'tot_charge': q, 'degauss': 0.1, 'smearing': 'mv' },
             'electrons': { 'conv_thr': 5.E-3 },
             'ions': { 'ion_dynamics': 'bfgs' },
@@ -64,7 +65,7 @@ for i,q in enumerate(potentials): # variable charge
         espresso.write_espresso_in( open(fin,'w'), electrode, relaxinput, pseudopotentials=pseudodict )
 
         '''run vc-relax -- working'''
-        pw = '/Users/nicholas/Desktop/qe/bin/pw.x' # update to take user input when script complete
+        pw = '/Users/nicholas/espresso/qe/bin/pw.x' # update to take user input when script complete
         os.system( f"{pw} < {fin} > {fout}" ) # exception raised for H=1: 'charge is wrong; smearing needed' ??
         
         with open(f"{fout}") as f:
