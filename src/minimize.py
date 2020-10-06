@@ -30,6 +30,10 @@ wfc = min([ sssp[atom]['cutoff'] for atom in cif.get_chemical_symbols() ])
 '''build 2x2 supercell -- working'''
 electrode = crystal(cif, size=(2,2,1))
 write(f"{cifstr}.png", electrode, format='png', show_unit_cell=2, rotation='5x,30y,90z', scale=35) # electrode image
+zmin = min(electrode.get_positions()[:,2]) # max z-coordinate
+zmax = max(electrode.get_positions()[:,2]) # min z-coordinate
+top = [ position for position in electrode.get_positions() if position[2] == zmax ] # positions of top surface atoms
+bottom = [ position for position in electrode.get_positions() if position[2] == zmin ] # positions of bottom surface atoms
 
 '''minimize routine -- in progress'''
 potentials = [0.0] # 0.0 when testing
@@ -46,8 +50,10 @@ for i,q in enumerate(potentials): # variable charge
         energies[f"Q{i}"] = {f"H{n}": 0} # {charge: {n-hydrogens: OUTPUT}}
 
         '''add n-hydrogens to electrode'''
-        # this line to add hydrogens -- no changes to cell for now
         if n > 0:
+        
+            # pop() positions with z +/-1 and add hydrogen to electrode or input
+        
             pseudodict['H'] = sssp['H']['cutoff'] # add hydrogen pseudo
             if int(wfc) > 60: wfc = 60.0
             if int(rho) > 480: rho = 480.0
@@ -65,6 +71,7 @@ for i,q in enumerate(potentials): # variable charge
         espresso.write_espresso_in( open(fin,'w'), electrode, relaxinput, pseudopotentials=pseudodict )
 
         '''run vc-relax -- working'''
+        '''
         pw = '/Users/nicholas/espresso/qe/bin/pw.x' # update to take user input when script complete
         os.system( f"{pw} < {fin} > {fout}" ) # exception raised for H=1: 'charge is wrong; smearing needed' ??
         
@@ -74,6 +81,7 @@ for i,q in enumerate(potentials): # variable charge
                 if not strlist: continue
                 elif strlist[0] == '!':
                     energies[f"Q{i}"][f"H{n}"] = float(strlist[-2])
+        '''
 
     os.chdir('../') # back to unit cell directory
     
