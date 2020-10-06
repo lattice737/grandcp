@@ -32,8 +32,8 @@ electrode = crystal(cif, size=(2,2,1))
 write(f"{cifstr}.png", electrode, format='png', show_unit_cell=2, rotation='5x,30y,90z', scale=35) # electrode image
 zmin = min(electrode.get_positions()[:,2]) # max z-coordinate
 zmax = max(electrode.get_positions()[:,2]) # min z-coordinate
-top = [ position for position in electrode.get_positions() if position[2] == zmax ] # positions of top surface atoms
-bottom = [ position for position in electrode.get_positions() if position[2] == zmin ] # positions of bottom surface atoms
+top = [ o for o in electrode.get_positions() if o[2] == zmax ] # positions of top surface atoms
+bottom = [ o for o in electrode.get_positions() if o[2] == zmin ] # positions of bottom surface atoms
 
 '''minimize routine -- in progress'''
 potentials = [0.0] # 0.0 when testing
@@ -52,11 +52,11 @@ for i,q in enumerate(potentials): # variable charge
         '''add n-hydrogens to electrode'''
         if n > 0:
         
-            # pop() positions with z +/-1 and add hydrogen to electrode or input
-        
             pseudodict['H'] = sssp['H']['cutoff'] # add hydrogen pseudo
             if int(wfc) > 60: wfc = 60.0
             if int(rho) > 480: rho = 480.0
+            
+            # pop() positions with z +/-1 and add hydrogen to electrode or input
 
         '''write qe input files -- working'''
         relaxinput = {
