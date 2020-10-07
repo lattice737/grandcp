@@ -33,7 +33,7 @@ write(f"{cifstr}.png", electrode, format='png', show_unit_cell=2, rotation='5x,3
 zmin = min(electrode.get_positions()[:,2]) # max electrode z-coordinate; top surface
 zmax = max(electrode.get_positions()[:,2]) # min electrode z-coordinate; bottom surface
 
-'''create hydrogen set'''
+'''create hydrogen set -- working'''
 hydrogens = [0] # initialize with 0 for enumeration
 for o in electrode.get_positions():
     if o[2] == zmin:
@@ -46,7 +46,6 @@ for o in electrode.get_positions():
 '''minimize routine -- in progress'''
 potentials = [0.0] # initialize with 0.0 for enumeration
 energies = {}
-
 for i,q in enumerate(potentials): # ith-potential with magnitude q
     
     if not os.path.exists(f"Q{i}"): os.mkdir(f"Q{i}") # make new dir if charge dir does not exist
@@ -63,7 +62,7 @@ for i,q in enumerate(potentials): # ith-potential with magnitude q
             if int(wfc) > 60: wfc = 60.0
             if int(rho) > 480: rho = 480.0
 
-        '''write qe input files -- debugging'''
+        '''write qe input files -- working'''
         relaxinput = {
             'control': { 'calculation': 'vc-relax', 'pseudo_dir': '../../src/pseudos/' },
             'system': { 'ecutrho': rho, 'ecutwfc': wfc, 'tot_charge': q, 'degauss': 0.1, 'smearing': 'mv' },
