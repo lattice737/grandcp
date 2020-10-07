@@ -44,17 +44,17 @@ for o in electrode.get_positions():
         hydrogens.append(o)
 
 '''minimize routine -- in progress'''
-potentials = [0.0] # 0.0 when testing
+potentials = [0.0] # initialize with 0.0 for enumeration
 energies = {}
 
-for i,q in enumerate(potentials): # i-charges with magnitude q
+for i,q in enumerate(potentials): # ith-potential with magnitude q
     
     if not os.path.exists(f"Q{i}"): os.mkdir(f"Q{i}") # make new dir if charge dir does not exist
     os.chdir(f"./Q{i}")
     
     for n,r in enumerate(hydrogens): # n-hydrogens with position r=(x,y,z)
 
-        energies[f"Q{i}"] = {f"H{n}": 0} # {charge: {n-hydrogens: OUTPUT}}
+        energies[f"Q{i}"] = {f"H{n}": 0} # {potential: {n-hydrogens: OUTPUT}}
 
         '''add n-hydrogens to electrode -- working'''
         if n > 0:
