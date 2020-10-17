@@ -95,6 +95,15 @@ print(energies) # FOR TESTING
 '''hydrogen energy routine -- in progress'''
 from ase.build import molecule
 H2 = molecule('H2')
+
+# phonon input
+phononinput = {
+    }
+
+# phonon frequency -- in progress
+from ase.phonons import Phonons
+
+# scf calculation
 scfinput = {
     'control': { 'calculation': 'scf', 'pseudo_dir': '../../src/pseudos/' }
     'system': { 'ecutrho': 480, 'ecutwfc': 60, 'ibrav': 2, 'celldm(1)': 10, 'nat': 2, 'ntyp': 1 }
