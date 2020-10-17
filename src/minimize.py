@@ -46,7 +46,7 @@ xmid = [ abs(x - hydrogens[0][0])/2 for x in hydrogens[:,0] if x - hydrogens[0][
 ymid = [ abs(y - hydrogens[0][1])/2 for y in hydrogens[:,1] if (y - hydrogens[0][1]) > 0.1 ] # y + ymid = y-midpoint
 print(xmid, ymid)
 
-'''minimize routine -- in progress'''
+'''minimize routine -- working'''
 potentials = [0.0] # initialize with 0.0 for enumeration
 energies = {}
 for i,q in enumerate(potentials): # ith-potential with magnitude q
@@ -91,6 +91,16 @@ for i,q in enumerate(potentials): # ith-potential with magnitude q
     os.chdir('../') # back to unit cell directory
     
 print(energies) # FOR TESTING
+
+'''hydrogen energy routine -- in progress'''
+from ase.build import molecule
+H2 = molecule('H2')
+scfinput = {
+    'control': { 'calculation': 'scf', 'pseudo_dir': '../../src/pseudos/' }
+    'system': { 'ecutrho': 480, 'ecutwfc': 60, 'ibrav': 2, 'celldm(1)': 10, 'nat': 2, 'ntyp': 1 }
+    'electrons': { 'conv_thr': 1.E-10 }
+    }
+espresso.write_espresso_in( open(''), H2, scfinput, pseudopotentials=pseudodict )
 
 '''minimization for dq'''
 # build electrode (NH = 0) # DONE
