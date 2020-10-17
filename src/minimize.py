@@ -19,7 +19,7 @@ else:
     os.mkdir(cifstr) # make new dir if unit cell dir does not exist
 os.chdir(f"./{cifstr}")
 
-# future development: check/make primitive unit cell -- try Atoms or geometry tools
+# future development: check/make primitive unit cell -- try Atoms or geometry tools; maybe crystal.primitive_cellbool
 
 '''get pseudos & cutoffs -- working'''
 sssp = json.load( open('../src/efficiency.json') )
@@ -42,6 +42,9 @@ for o in electrode.get_positions():
     elif o[2] == zmax:
         o[2] += 1
         hydrogens.append(o)
+xmid = [ abs(x - hydrogens[0][0])/2 for x in hydrogens[:,0] if x - hydrogens[0][0] > 0.1 ] # x + xmid = x-midpoint
+ymid = [ abs(y - hydrogens[0][1])/2 for y in hydrogens[:,1] if (y - hydrogens[0][1]) > 0.1 ] # y + ymid = y-midpoint
+print(xmid, ymid)
 
 '''minimize routine -- in progress'''
 potentials = [0.0] # initialize with 0.0 for enumeration
@@ -57,7 +60,7 @@ for i,q in enumerate(potentials): # ith-potential with magnitude q
 
         '''add n-hydrogens to electrode -- working'''
         if n > 0:
-            electrode.append(Atom(symbol='H',position=r))
+            electrode.append(Atom(symbol='H',position=r)) # add hydrogen to electrode
             pseudodict['H'] = sssp['H']['filename'] # add hydrogen pseudo
             if int(wfc) > 60: wfc = 60.0
             if int(rho) > 480: rho = 480.0
